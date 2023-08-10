@@ -1,0 +1,87 @@
+[tool.poetry]
+name = "fastapi-postgresql"
+version = "0.1.0"
+description = ""
+authors = []
+repository = ""
+keywords = [""]
+
+
+[tool.poetry.dependencies]
+python = "^3.9.9"
+asgi-correlation-id = "~1.1"
+fastapi = "~0.74"
+psycopg2-binary = "~2.8"
+python-dateutil = "~2.8"
+python-dotenv = "~0.19"
+uvicorn = "~0.17"
+fastapi-sqlalchemy = "~0.2"
+alembic = "^1.11.1"
+
+
+[tool.poetry.dev-dependencies]
+black = "^22.1"  # stable release
+coverage = {extras = ["toml"], version = "^4.1"}
+flake8 = "^4.0.1"
+flake8-quotes = "^3.2"
+isort = "^5.6"
+mccabe = "<0.7"  # flake8 v4 dependency
+pycodestyle = "^2.6"
+pyflakes = "^2.2"
+pytest = "^6.1"
+pytest-cov = "^2.10"
+python-editor = "^1.0"
+pytest-postgresql = "^2.5"
+pytest-env = "^0.6"
+mypy = "^0.790"
+factory-boy = "^3.2"
+ipython = "^7.21"
+ipdb = "*"
+
+[tool.poetry-dynamic-versioning]
+enable = true
+vcs = "git"
+style = "semver"
+
+[build-system]
+requires = ["setuptools", "poetry-core>=1.0.0", "poetry-dynamic-versioning"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.isort]
+profile = "black"
+src_paths = ["/usr/code-challenge/src/"]
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+combine_as_imports = true
+
+[tool.black]
+line-length = 88
+target-version = ["py38", "py39"]
+
+[tool.mypy]
+python_version = 3.8
+disallow_untyped_defs = true
+files = ["/usr/code-challenge/src/app/**/*.py"]
+
+[[tool.mypy.overrides]]
+module = [ "setuptools", "sqlalchemy.*", "pytest_postgresql"]
+ignore_missing_imports = true
+
+[tool.pytest.ini_options]
+addopts = "--cov=/usr/code-challenge/src/app -vv --no-cov-on-fail"
+env = [
+    "SERVER_ENV=unit_test",
+    "DB_URI=postgresql://postgres:postgres@code-challenge_db_test:5432/code-challenge_test",
+    "DEVELOPMENT=true"
+]
+
+[tool.coverage]
+fail_under = 100
+show_missing = true
+
+[tool.coverage.run]
+branch = true
+data_file = "/home/code-challenge/.coverage"
+omit = ["/usr/code-challenge/src/app/setup.py"]

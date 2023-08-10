@@ -1,0 +1,61 @@
+version: "3.4"
+
+services:
+  code-challenge:
+    container_name: code-challenge_service
+    build:
+      context: ../
+      dockerfile: build/Dockerfile
+      target: development
+    ports:
+      - "5000:5000"
+    volumes:
+      - ../:/usr/code-challenge
+    depends_on:
+      - code-challenge_db
+      - code-challenge_db_test
+    environment:
+      - DB_URI=postgresql://code-challenge:password@code-challenge_db:5432/code-challenge_dev
+      - SERVER_ENV=development
+    stdin_open: true
+    tty: true
+
+  code-challenge_db:
+    image: postgres:12.5
+    container_name: code-challenge_db
+    ports:
+      - "5432:5432"
+    environment:
+      - POSTGRES_USER=code-challenge
+      - POSTGRES_PASSWORD=password
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=code-challenge_dev
+    volumes:
+      - ./ignore/pg-data:/var/lib/postgresql/data
+    command: postgres
+    restart: always
+
+  code-challenge_db_test:
+    image: postgres:12.5
+    container_name: code-challenge_db_test
+    ports:
+      - "5433:5432"
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - PGDATA=/var/lib/postgresql/data
+      - POSTGRES_DB=code-challenge_test
+    volumes:
+      - ./ignore/pg-test-data:/var/lib/postgresql/data
+    command: postgres
+    restart: always
+  
+  pgadmin:
+    container_name: pgadmin4_container
+    image: dpage/pgadmin4
+    restart: always
+    environment:
+      PGADMIN_DEFAULT_EMAIL: admin@admin.com
+      PGADMIN_DEFAULT_PASSWORD: root
+    ports:
+      - "5050:80"

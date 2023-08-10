@@ -1,0 +1,76 @@
+{
+    "version": 1,
+    "filters": {
+        "correlation_id": {}
+    },
+    "formatters":
+    {
+        "json":
+        {
+            "()": "pythonjsonlogger.jsonlogger.JsonFormatter",
+            "format": "%(asctime)s %(levelname)s [%(correlation_id)s] %(message)s",
+            "rename_fields":
+            {
+                "asctime": "timestamp",
+                "levelname": "severity"
+            }
+        }
+    },
+    "handlers":
+    {
+        "standard_output":
+        {
+            "class": "logging.StreamHandler",
+            "filters": ["correlation_id"],
+            "formatter": "json",
+            "stream": "ext://sys.stdout"
+        }
+    },
+    "loggers":
+    {
+        "uvicorn.error":
+        {
+            "level": "INFO",
+            "handlers":
+            [
+                "standard_output"
+            ],
+            "propagate": false
+        },
+        "uvicorn.access":
+        {
+            "level": "INFO",
+            "handlers":
+            [
+                "standard_output"
+            ],
+            "propagate": false
+        },
+        "code-challenge":
+        {
+            "level": "INFO",
+            "handlers":
+            [
+                "standard_output"
+            ],
+            "propagate": false
+        },
+        "asgi_correlation_id":
+        {
+            "level": "INFO",
+            "handlers":
+            [
+                "standard_output"
+            ],
+            "propagate": false
+        }
+    },
+    "root":
+    {
+        "level": "INFO",
+        "handlers":
+        [
+            "standard_output"
+        ]
+    }
+}
